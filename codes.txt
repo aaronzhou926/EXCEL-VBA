@@ -1,0 +1,84 @@
+Sub stockticker():
+
+For Each ws In Worksheets
+
+Dim stock_name As String
+Dim stock_volume As Double
+Dim year_open As Double
+Dim year_close As Double
+Dim yearly_change As Double
+Dim yearly_percentage As Double
+
+
+Dim column As Integer
+Dim column2 As Integer
+
+lastrow = ws.Cells(Rows.Count, 1).End(xlUp).Row
+stock_volume = 0
+column = 2
+column2 = 2
+
+ws.Range("K1").Value = "ticker"
+ws.Range("L1").Value = "yearly change"
+ws.Range("M1").Value = "yearly percentage change"
+ws.Range("N1").Value = "total total volume"
+
+For i = 2 To lastrow
+
+If ws.Cells(i, 1).Value <> ws.Cells(i + 1, 1).Value Then
+
+'assigning values to variables
+stock_name = ws.Cells(i, 1).Value
+stock_volume = stock_volume + ws.Cells(i, 7).Value
+
+'assigning varaiables to cells
+ws.Range("K" & column).Value = stock_name
+ws.Range("N" & column).Value = stock_volume
+
+'resets variables
+stock_volume = 0
+column = column + 1
+
+Else
+
+stock_volume = stock_volume + ws.Cells(i, 7).Value
+
+End If
+
+Next i
+
+For j = 2 To lastrow
+
+If ws.Cells(j, 1).Value <> ws.Cells(j - 1, 1).Value Then
+
+year_open = ws.Cells(j, 3).Value
+
+ElseIf ws.Cells(j, 1).Value <> ws.Cells(j + 1, 1).Value Then
+
+year_close = ws.Cells(j, 6).Value
+
+yearly_change = year_close - year_open
+yearly_percentage = (year_close - year_open) / year_open
+
+If yearly_change > 0 Then
+
+ws.Range("L" & column2).Interior.ColorIndex = 4
+ws.Range("L" & column2).Value = yearly_change
+
+Else
+
+ws.Range("L" & column2).Interior.ColorIndex = 3
+ws.Range("L" & column2).Value = yearly_change
+
+End If
+
+ws.Range("M" & column2).Value = Format(yearly_percentage, "percent")
+column2 = column2 + 1
+
+End If
+
+Next j
+
+Next ws
+
+End Sub
